@@ -45,8 +45,11 @@ router.get('/api/history', function (req, res) {
         User.getPreference(decoded.id, function (err, preference) {
             if (err) throw err
             res.status(200).send(preference)
+            console.log(preference)
         })
 
 
     })
 })
+
+module.exports = router
