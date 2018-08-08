@@ -8,14 +8,22 @@ var databaseConfig = require('./config/database')
 
 mongoose.connect(databaseConfig.address);
 
+/* app.use(express.json())
+ */
+app.use(bodyParser())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
 var aurdinoreport = require('./routes/aurdinoreport')
 var userRoute = require('./routes/user')
 
-
+/* app.use(bodyParser())
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
-}));
+})); */
 
 app.use('/', aurdinoreport)
 app.use('/user', userRoute)

@@ -4,13 +4,47 @@ var User = require('../models/user')
 var jwt = require('jsonwebtoken')
 var config = require('../config/database')
 
+router.post('/login', function (req, res) {
+    User.getUserByEmail(req.body.email,
+        function (err, user) {
+            if (err) return res.status(500).send("No email Id or its specified password found")
+            User.comparePassword(req.body.password, user.password, function (err, isMatch) {
+                if (err) throw err;
+                if (isMatch) {
+                    var token = jwt.sign({
+                        id: user._id
+                    }, config.secret, {
+                        expiresIn: 864000
+                    })
+
+                    res.status(200).send({
+                        auth: true,
+                        token: token
+                    })
+                } else {
+                    res.status(500).send("Password or email not authorized")
+                }
+            })
+
+
+
+        }
+
+    )
+})
+
 router.post('/register', function (req, res) {
+
+    console.log('req.name : ', req.body.name, 'req.password : ', req.body.password, 'req.email', req.body.email)
+
+    console.log('req.body', req.body)
 
     var newUser = new User({
         name: req.body.name,
         password: req.body.password,
         email: req.body.email
     })
+
 
     User.createUser(newUser, function (err, user) {
         if (err) return res.status(500).send("There was a problem registering the user.")
@@ -21,6 +55,8 @@ router.post('/register', function (req, res) {
         }, config.secret, {
             expiresIn: 864000
         })
+
+        console.log('user registered :', user)
 
         res.status(200).send({
             auth: true,
