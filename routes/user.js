@@ -8,7 +8,8 @@ router.post('/register', function (req, res) {
 
     var newUser = new User({
         name: req.body.name,
-        password: req.body.password
+        password: req.body.password,
+        email: req.body.email
     })
 
     User.createUser(newUser, function (err, user) {
