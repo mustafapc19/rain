@@ -17,19 +17,19 @@ app.use(bodyParser.urlencoded({
 }));
 
 var aurdinoreport = require('./routes/aurdinoreport')
-var userRoute = require('./routes/user')
+var login = require('./routes/user/login')
+var register = require('./routes/user/register')
+var preference = require('./routes/api/preference')
 
-/* app.use(bodyParser())
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-})); */
 
-app.use('/', aurdinoreport)
-app.use('/user', userRoute)
+
+app.use('/user/login', login)
+app.use('/user/register', register)
+app.use('/user/api/preference', preference)
+
 
 app.use('/ard', aurdinoreport)
 
-//  app.post('/user', userRoute)
+
 
 app.listen(1234)

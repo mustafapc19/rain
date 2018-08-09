@@ -32,26 +32,28 @@ var User = (module.exports = mongoose.model("User", UserSchema));
 
 module.exports.createUser = function (newUser, callback) {
     console.log("create user entered");
-    bcrypt.genSalt(10, function (err, salt) {
-        bcrypt.hash(newUser.password, salt, function (err, hash) {
-            preference = new Preference();
-            preference.temp = 25;
-            preference.moist = 90;
-            preference.save();
+    if (newUser.username && newUser.password) {
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(newUser.password, salt, function (err, hash) {
+                preference = new Preference();
+                preference.temp = 25;
+                preference.moist = 90;
+                preference.save();
 
-            history = new ClientHistory();
-            history.temp.push(25);
-            history.moist.push(90);
-            history.save();
+                history = new ClientHistory();
+                history.temp.push(25);
+                history.moist.push(90);
+                history.save();
 
-            newUser.preference = preference._id;
-            newUser.history = history._id;
-            newUser.password = hash;
+                newUser.preference = preference._id;
+                newUser.history = history._id;
+                newUser.password = hash;
 
-            newUser.save(callback);
+                newUser.save(callback);
+            });
         });
-    });
-};
+    }
+}
 
 module.exports.getUserByEmail = function (email, callback) {
     console.log("Get user by email id enterd")
