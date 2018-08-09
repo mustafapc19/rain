@@ -20,13 +20,14 @@ var aurdinoreport = require('./routes/aurdinoreport')
 var login = require('./routes/user/login')
 var register = require('./routes/user/register')
 var preference = require('./routes/api/preference')
+var history = require('./routes/api/history')
 
 
 
 app.use('/user/login', login)
 app.use('/user/register', register)
 app.use('/user/api/preference', preference)
-
+app.use('/user/api/history', history)
 
 app.use('/ard', aurdinoreport)
 

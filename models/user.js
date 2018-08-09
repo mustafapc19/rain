@@ -3,21 +3,29 @@ var bcrypt = require("bcryptjs");
 var Preference = require("./preference");
 var ClientHistory = require("./history");
 var GrowBox = require("./growBox")
+var uniqueValidator = require('mongoose-unique-validator')
 var Schema = mongoose.Schema;
+
+
 var UserSchema = mongoose.Schema({
     /* _id: {
           type: mongoose.Schema.Types.ObjectId
       }, */
     username: {
         type: String,
-        index: true
+        index: true,
+        required: true,
+        unique: true
     },
     email: {
-        type: String
+        type: String,
+        required: true,
+        unique: true
         // index: true
     },
     password: {
-        type: String
+        type: String,
+        required: true
     },
     preference: {
         type: Schema.Types.ObjectId,
@@ -34,10 +42,12 @@ var UserSchema = mongoose.Schema({
     }
 });
 
-var User = (module.exports = mongoose.model("User", UserSchema));
+UserSchema.plugin(uniqueValidator);
 
+var User = (module.exports = mongoose.model("User", UserSchema));
 module.exports.createUser = function (newUser, callback) {
     console.log("create user entered");
+    // console.log("newUser :", newUser)
     if (newUser.username && newUser.password) {
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(newUser.password, salt, function (err, hash) {
@@ -62,6 +72,8 @@ module.exports.createUser = function (newUser, callback) {
                 newUser.save(callback);
             });
         });
+    } else {
+        console.log("else")
     }
 }
 
