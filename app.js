@@ -21,6 +21,8 @@ var login = require('./routes/user/login')
 var register = require('./routes/user/register')
 var preference = require('./routes/api/preference')
 var history = require('./routes/api/history')
+var presentState = require('./routes/device/presentState')
+var userPresentState = require('./routes/api/presentState')
 
 
 
@@ -28,8 +30,10 @@ app.use('/user/login', login)
 app.use('/user/register', register)
 app.use('/user/api/preference', preference)
 app.use('/user/api/history', history)
+app.use('/user/api/presentstate', userPresentState)
 
 app.use('/ard', aurdinoreport)
+app.use('/ard/presentstate', presentState)
 
 
 

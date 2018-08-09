@@ -3,6 +3,7 @@ var bcrypt = require("bcryptjs");
 var Preference = require("./preference");
 var ClientHistory = require("./history");
 var GrowBox = require("./growBox")
+var PresentState = require('./presentState')
 var uniqueValidator = require('mongoose-unique-validator')
 var Schema = mongoose.Schema;
 
@@ -39,6 +40,10 @@ var UserSchema = mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "GrowBox"
 
+    },
+    presentState: {
+        type: Schema.Types.ObjectId,
+        ref: "PresentState"
     }
 });
 
@@ -51,6 +56,7 @@ module.exports.createUser = function (newUser, callback) {
     if (newUser.username && newUser.password) {
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(newUser.password, salt, function (err, hash) {
+
                 preference = new Preference();
                 preference.temp = 25;
                 preference.moist = 90;
@@ -62,12 +68,22 @@ module.exports.createUser = function (newUser, callback) {
                 history.save();
 
                 growBox = new GrowBox()
+                growBox.save()
                 // growBox.id.push(ipAddr)
+
+                presentState = new PresentState()
+                presentState.temp = 25
+                presentState.moist = 90
+                presentState.tempBackUp = 25
+                presentState.moistBackUp = 90
+                presentState.save()
+
 
                 newUser.preference = preference._id;
                 newUseregrowBox = growBox._id
-                newUser.history = history._id;
-                newUser.password = hash;
+                newUser.history = history._id
+                newUser.presentState = presentState._id
+                newUser.password = hash
 
                 newUser.save(callback);
             });
@@ -150,7 +166,7 @@ module.exports.getPreference = function (userId, callback) {
         if (err) throw err;
         if (!user) {
             console.log("User Id not found");
-            return;
+            // return;
         }
 
         Preference.contains(user.preference, callback);
@@ -164,7 +180,7 @@ module.exports.getClientHistory = function (userId, callback) {
             console.log("User Id not found");
             return;
         }
-        return ClientHistory.contains(user.history, callback);
+        ClientHistory.contains(user.history, callback);
     });
 };
 
@@ -178,3 +194,26 @@ module.exports.getGrowBox = function (userId, callback) {
         GrowBox.contains(user.growBox, callback);
     });
 };
+
+module.exports.getPresentState = function (userId, callback) {
+    User.findById(userId, function (err, user) {
+        if (err) throw err
+        if (!user) {
+            console.log("User I not found")
+        }
+        PresentState.contains(user.presentState, callback)
+
+    })
+}
+
+module.exports.updatePresentState = function (userId, update, callback) {
+    User.findById(userId, function (err, user) {
+        if (err) {
+            console.log('updatePresentState : internal error')
+        }
+        if (!user) {
+            console.log("User not found")
+        }
+        PresentState.update(user.presentState, update, callback)
+    })
+}
