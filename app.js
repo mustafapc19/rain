@@ -23,7 +23,7 @@ var preference = require('./routes/api/preference')
 var history = require('./routes/api/history')
 var presentState = require('./routes/device/presentState')
 var userPresentState = require('./routes/api/presentState')
-
+var updatePreference = require('./routes/api/updatePreference')
 
 
 app.use('/user/login', login)
@@ -31,6 +31,7 @@ app.use('/user/register', register)
 app.use('/user/api/preference', preference)
 app.use('/user/api/history', history)
 app.use('/user/api/presentstate', userPresentState)
+app.use('/user/api/updatePreference', updatePreference)
 
 app.use('/ard', aurdinoreport)
 app.use('/ard/presentstate', presentState)

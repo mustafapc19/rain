@@ -12,12 +12,16 @@ var PreferenceSchema = mongoose.Schema({
 })
 var Preference = module.exports = mongoose.model('Preference', PreferenceSchema)
 
-module.exports.update = function (prefId, temp, moist) {
+module.exports.update = function (prefId, update, callback) {
 
-    Preference.findbyId(prefId, function (err, preferance) {
-        if (err) throw err
-        preferance.temp = temp
-        preferance.moist = moist
+    Preference.findById(prefId, function (err, preferance) {
+        if (err) {
+            callback(false)
+        }
+        preferance.temp = update.temp
+        preferance.moist = update.moist
+        preferance.save()
+        callback(true)
 
     })
 }
@@ -25,6 +29,5 @@ module.exports.update = function (prefId, temp, moist) {
 
 } */
 module.exports.contains = function (prefId, callback) {
-
     Preference.findById(prefId, callback)
 }
